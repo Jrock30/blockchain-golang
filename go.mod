@@ -1,0 +1,1 @@
+module "github.com/jrock30/coin-basic"
