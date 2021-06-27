@@ -1,0 +1,15 @@
+{{define "home"}}
+<!DOCTYPE html>
+<html lang="en">
+    {{template "head" .PageTitle}}
+    <body>
+        {{template "header" .PageTitle}} {{/*랜더링 할 곳에 .으로 데이터를 넘겨준다*/}}
+        <main>
+            {{range .Blocks}}
+                {{template "block" .}} {{/*range 내부에서 . 전달은 Blocks 가 아닌 block 가 전달된다.*/}}
+            {{end}}
+        </main>
+    {{template "footer"}}
+    </body>
+</html>
+{{end}}

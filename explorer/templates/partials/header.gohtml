@@ -1,0 +1,16 @@
+{{define "header"}}
+<header>
+    <nav>
+        <a href="/">rock coin</a>
+        <ul>
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a href="/add">Add</a>
+            </li>
+        </ul>
+    </nav>
+    <h1>{{.}}</h1> {{/*랜더링 하는 곳에서는 . 으로 만 사용 가능 .PageTitle 을 넘겨 받아옴*/}}
+</header>
+{{end}}
