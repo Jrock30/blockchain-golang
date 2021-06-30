@@ -54,6 +54,7 @@ func add(rw http.ResponseWriter, r *http.Request) {
 }
 
 func Start() {
+	// .Must 는 error 에 대해서 우리가 직접 확인하지 않도록 해준
 	// 패턴으로 가져온다 standard library(**/* 는 불가능하다.)
 	templates = template.Must(template.ParseGlob(templateDir + "pages/*.gohtml"))
 	// 두번째 패턴 가져오기
