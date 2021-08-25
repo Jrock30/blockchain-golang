@@ -7,24 +7,25 @@ import (
 )
 
 type Block struct {
-	Data     string
-	Hash     string
-	PrevHash string // 이전의 hash
+	Data     string `json:"data"`
+	Hash     string `json:"hash"`
+	PrevHash string `json:"prevHash,omitempty"` // 이전의 hash, omitempty -> 비어있는 필드는 생략
+	Height   int    `json:"height"`
 }
 
 type blockchain struct {
 	blocks []*Block // block 의 slice 가 아닌 pointer 들의 slice (복사 X)
 }
 
-var b *blockchain   // SingleTon
-var one sync.Once	// sync package
+var b *blockchain // SingleTon
+var one sync.Once // sync package
 
 /* receiver function (Method)
-	Calculate Hash
- */
+Calculate Hash
+*/
 func (b *Block) calculateHash() {
-	hash := sha256.Sum256([]byte(b.Data + b.PrevHash))  // sha256 Byte Code Hash 생성 (data + prevHash)
-	b.Hash = fmt.Sprintf("%x", hash) 		    // 바이트 코드를 16진수 String 으로 변환
+	hash := sha256.Sum256([]byte(b.Data + b.PrevHash)) // sha256 Byte Code Hash 생성 (data + prevHash)
+	b.Hash = fmt.Sprintf("%x", hash)                   // 바이트 코드를 16진수 String 으로 변환
 }
 
 // Get Last Block Hash
@@ -38,13 +39,13 @@ func getLastHash() string {
 
 // Create New Block
 func createBlock(data string) *Block {
-	newBlock := Block{data, "", getLastHash()}
+	newBlock := Block{data, "", getLastHash(), len(GetBlockchain().blocks) + 1}
 	newBlock.calculateHash()
 	return &newBlock
 }
 
 // export function
-func (b *blockchain) AddBlock(data string)  {
+func (b *blockchain) AddBlock(data string) {
 	b.blocks = append(b.blocks, createBlock(data))
 }
 
@@ -61,7 +62,12 @@ func GetBlockchain() *blockchain {
 }
 
 func (b *blockchain) AllBLocks() []*Block {
-//func AllBlocks() []*block {
-//	return GetBlockchain().blocks
+	//func AllBlocks() []*block {
+	//	return GetBlockchain().blocks
 	return b.blocks
+}
+
+// GetBlock block 하나를 가져온다
+func (b *blockchain) GetBlock(hegiht int) *Block {
+	return b.blocks[hegiht-1]
 }
