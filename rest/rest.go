@@ -37,6 +37,10 @@ type addBlockBody struct {
 	Message string
 }
 
+type errorResponse struct {
+	ErrorMessage string `json:"errorMessage"`
+}
+
 /**
 Stringer interface
  - String 하나의 메소드만 구현시킴
@@ -103,9 +107,15 @@ func blocks(rw http.ResponseWriter, r *http.Request) {
 func block(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["height"])
-	utils.HandleErr(err)                             // error 핸들링을 직접 해주어야한다.
-	block := blockchain.GetBlockchain().GetBlock(id) // 블록 하나를 가져온다.
-	json.NewEncoder(rw).Encode(block)                // json 인코딩
+	utils.HandleErr(err)                                  // error 핸들링을 직접 해주어야한다.
+	block, err := blockchain.GetBlockchain().GetBlock(id) // 블록 하나를 가져온다.
+	encoder := json.NewEncoder(rw)
+	if err == blockchain.ErrNotFound {
+		encoder.Encode(errorResponse{fmt.Sprint(err)})
+
+	} else {
+		encoder.Encode(block) // json 인코딩
+	}
 }
 
 func Start(aPort int) {
