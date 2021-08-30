@@ -118,9 +118,19 @@ func block(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// 미들웨어
+func jsonContentTypeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) { // HandlerFunc 는 function 이 아니고 type 이다
+		rw.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(rw, r)
+	})
+
+}
+
 func Start(aPort int) {
-	router := mux.NewRouter() // gorilla mux (URL Mapping 을 더 다양하게 사용할 수 있음)
 	port = fmt.Sprintf(":%d", aPort)
+	router := mux.NewRouter()             // gorilla mux (URL Mapping 을 더 다양하게 사용할 수 있음)
+	router.Use(jsonContentTypeMiddleware) // path 에 도달하기 전에 이게 먼저 실행 된다. 미들웨어
 	// API JSON
 	//http.HandleFunc("/", documentation)
 	//http.HandleFunc("/blocks", blocks)
