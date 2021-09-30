@@ -1,8 +1,16 @@
 package main
 
 import (
-	"github.com/jrock30/coin-basic/rest"
+	"flag"
+	"fmt"
+	"os"
 )
+
+func usage() {
+	fmt.Printf("Please use following commands:\n\n")
+	fmt.Printf("explorer:   Start the HTML Explorer\n")
+	fmt.Printf("rest    :   Start the REST API (recommended)\n")
+}
 
 /*
   Main Package (Entry Point)
@@ -18,5 +26,30 @@ func main() {
 	//go explorer.Start(3000)
 
 	// REST API SERVER
-	rest.Start(4000)
+	//rest.Start(4000)
+
+	// 커맨드를 받아서 실행
+
+	fmt.Println(os.Args[2:])
+
+	if len(os.Args) < 2 {
+		usage()
+		os.Exit(0) // 프로그램 종료
+	}
+
+	rest := flag.NewFlagSet("rest", flag.ExitOnError)
+
+	portFlag := rest.Int("port", 4000, "Sets the port of the server")
+
+	switch os.Args[1] {
+	case "explorer":
+		fmt.Println("Start Explorer")
+	case "rest":
+		fmt.Println("Start REST API")
+		rest.Parse(os.Args[2:])
+	default:
+		usage()
+	}
+
+	fmt.Println(*portFlag)
 }
